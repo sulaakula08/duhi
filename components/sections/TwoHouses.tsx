@@ -12,16 +12,16 @@ const HOUSES = [
   {
     key: "women" as const,
     href: "/collections/women",
-    title: "Ей",
-    line: "Тубероза, роза, мёд, соль",
+    title: "Женские",
+    line: "Пять ароматов: тубероза, роза, мёд, цитрус",
     tint: "var(--feminine)",
     slug: "vesper-bloom",
   },
   {
     key: "men" as const,
     href: "/collections/men",
-    title: "Ему",
-    line: "Ветивер, зола, железное дерево, кожа",
+    title: "Мужские",
+    line: "Пять ароматов: ветивер, кедр, табак, кожа",
     tint: "var(--masculine)",
     slug: "noir-vetiver",
   },
@@ -39,9 +39,9 @@ export function TwoHouses() {
   return (
     <section aria-labelledby="houses-heading" className="py-24 md:py-32">
       <div className="container-x">
-        <p className="label-xs text-accent">Две половины</p>
+        <p className="label-xs text-accent">Каталог</p>
         <h2 id="houses-heading" className="display-2 mt-4 max-w-2xl">
-          Линия делится один раз — и только один.
+          Кому выбираете?
         </h2>
       </div>
 
@@ -121,12 +121,12 @@ export function TwoHouses() {
         </div>
 
         <p className="mt-6 text-center text-[0.85rem] text-muted">
-          Или обойтись без деления —{" "}
+          Ещё есть{" "}
           <Link
             href="/collections/unisex"
             className="text-accent underline-offset-4 hover:underline"
           >
-            четыре аромата для кого угодно
+            четыре унисекс-аромата
           </Link>
           .
         </p>

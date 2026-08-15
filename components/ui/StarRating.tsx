@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, plural } from "@/lib/utils";
 
 export function StarRating({
   rating,
@@ -23,15 +23,22 @@ export function StarRating({
           />
         ))}
       </span>
-      {/* The numeric value carries the meaning; the stars are decoration, so the
-          rating is never communicated by colour alone. */}
+      {/* Смысл несёт число, звёзды — украшение: оценка нигде не передаётся
+          только цветом. */}
       <span className="text-[0.8rem] text-muted">
         {rating.toFixed(1)}
         {reviewCount !== undefined && (
-          <span className="sr-only"> out of 5, from {reviewCount} reviews</span>
-        )}
-        {reviewCount !== undefined && (
-          <span aria-hidden="true"> · {reviewCount} reviews</span>
+          <>
+            <span className="sr-only">
+              {" "}
+              из 5, на основе {reviewCount}{" "}
+              {plural(reviewCount, "отзыва", "отзывов", "отзывов")}
+            </span>
+            <span aria-hidden="true">
+              {" "}
+              · {reviewCount} {plural(reviewCount, "отзыв", "отзыва", "отзывов")}
+            </span>
+          </>
         )}
       </span>
     </div>

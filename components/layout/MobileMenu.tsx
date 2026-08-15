@@ -128,8 +128,9 @@ export function MobileMenu({
           </nav>
 
           <p className="container-x absolute inset-x-0 bottom-10 text-[0.8rem] text-muted">
-            Четырнадцать ароматов, сделанных не спеша,
-            <br />в Грассе и Лиссабоне.
+            Доставка от €120 бесплатно.
+            <br />
+            Два пробника к каждому заказу.
           </p>
         </motion.div>
       )}

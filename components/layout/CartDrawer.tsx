@@ -95,7 +95,7 @@ export function CartDrawer() {
             ref={panelRef}
             role="dialog"
             aria-modal="true"
-            aria-label="Shopping bag"
+            aria-label="Корзина"
             className="fixed inset-y-0 right-0 z-100 flex w-full max-w-[27rem] flex-col bg-bg shadow-lift"
             initial={reduced ? { opacity: 0 } : { x: "100%" }}
             animate={reduced ? { opacity: 1 } : { x: 0 }}
@@ -122,7 +122,7 @@ export function CartDrawer() {
                   К каждому заказу — два пробника на ваш выбор.
                 </p>
                 <ButtonLink href="/collections" onClick={close} variant="ghost">
-                  Смотреть коллекцию
+                  В каталог
                 </ButtonLink>
               </div>
             ) : (

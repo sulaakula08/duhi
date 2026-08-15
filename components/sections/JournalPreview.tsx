@@ -16,7 +16,7 @@ export function JournalPreview() {
           <MaskedLines
             as="h2"
             id="journal-heading"
-            lines={["Про то, как это носят"]}
+            lines={["Как выбрать аромат"]}
             className="display-2 mt-4"
           />
         </div>

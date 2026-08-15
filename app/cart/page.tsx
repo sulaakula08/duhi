@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function CartPage() {
   return (
     <>
-      <PageHeader eyebrow="Корзина" lines={["Что вы", "выбрали"]} />
+      <PageHeader eyebrow="Заказ" lines={["Корзина"]} />
       <CartView />
     </>
   );

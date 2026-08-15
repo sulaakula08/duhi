@@ -36,14 +36,14 @@ export function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.15 }}
           >
-            Eldea — четырнадцать ароматов
+            Парфюмерия Eldea
           </motion.p>
 
           <MaskedLines
             as="h1"
             immediate
             delay={0.2}
-            lines={["Запах,", "который помнят."]}
+            lines={["Ароматы себе", "и в подарок"]}
             className="display-1 mt-6"
           />
 
@@ -53,8 +53,8 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.7, ease: ease.out }}
           >
-            Небольшой дом, который делает ароматы для женщин и мужчин по одному
-            правилу: не добавляем ничего, что делает аромат только приятнее.
+            Четырнадцать ароматов для женщин и мужчин. Три объёма, парфюмерная
+            вода, два пробника к каждому заказу.
           </motion.p>
 
           <motion.div
@@ -64,7 +64,7 @@ export function Hero() {
             transition={{ duration: 0.9, delay: 0.85, ease: ease.out }}
           >
             <ButtonLink href="/collections" size="lg">
-              Смотреть коллекцию
+              В каталог
             </ButtonLink>
             <ButtonLink href="/collections/women" size="lg" variant="ghost">
               Подобрать аромат

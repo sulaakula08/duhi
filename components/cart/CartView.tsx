@@ -33,7 +33,7 @@ export function CartView() {
         <p className="max-w-sm text-[0.95rem] text-muted">
           Четырнадцать ароматов, у каждого три объёма. К любому заказу — два пробника.
         </p>
-        <ButtonLink href="/collections">Смотреть коллекцию</ButtonLink>
+        <ButtonLink href="/collections">В каталог</ButtonLink>
       </div>
     );
   }

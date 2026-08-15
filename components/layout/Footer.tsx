@@ -12,8 +12,8 @@ export function Footer() {
         <div>
           <Logo className="text-xl" />
           <p className="mt-5 max-w-xs text-[0.92rem] text-muted">
-            Небольшой парфюмерный дом. Четырнадцать ароматов, сделанных не спеша,
-            в Грассе и Лиссабоне.
+            Магазин парфюмерии. Четырнадцать ароматов для женщин и мужчин,
+            в объёмах 30, 50 и 100 мл.
           </p>
         </div>
 
@@ -37,7 +37,7 @@ export function Footer() {
       </div>
 
       <div className="container-x flex flex-col gap-3 border-t border-line py-7 text-[0.78rem] text-muted sm:flex-row sm:items-center sm:justify-between">
-        <p>© {new Date().getFullYear()} Eldea. Запах, который помнят.</p>
+        <p>© {new Date().getFullYear()} Eldea</p>
         <p>
           Демонстрационный магазин: заказы не собираются, оплата не проводится.
         </p>

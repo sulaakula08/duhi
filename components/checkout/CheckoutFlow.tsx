@@ -72,7 +72,7 @@ export function CheckoutFlow() {
     return (
       <div className="container-x flex flex-col items-center gap-5 py-24 text-center">
         <p className="display-3">Оформлять нечего.</p>
-        <Button onClick={() => router.push("/collections")}>Смотреть коллекцию</Button>
+        <Button onClick={() => router.push("/collections")}>В каталог</Button>
       </div>
     );
   }

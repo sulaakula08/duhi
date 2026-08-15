@@ -13,10 +13,10 @@ export default function ConfirmationPage() {
       <Confetti />
 
       <p className="label-xs mt-8 text-accent">Заказ ELD-2026-0431</p>
-      <h1 className="display-1 mt-6 max-w-3xl">Спасибо.</h1>
+      <h1 className="display-1 mt-6 max-w-3xl">Заказ принят</h1>
       <p className="mt-7 max-w-md text-[1.02rem] text-muted">
-        Заказ принят. Мы напишем, когда он уедет, — обычно это два рабочих дня.
-        Пробники к нему выбираем руками.
+        Подтверждение отправили на почту. Когда посылка уедет, пришлём
+        трек-номер — обычно это занимает два рабочих дня.
       </p>
 
       <p className="mt-8 max-w-md rounded-sm border border-line bg-surface px-5 py-4 text-[0.85rem] text-muted">
@@ -26,7 +26,7 @@ export default function ConfirmationPage() {
 
       <div className="mt-10 flex flex-wrap justify-center gap-3">
         <ButtonLink href="/collections" size="lg">
-          Смотреть дальше
+          Вернуться в каталог
         </ButtonLink>
         <ButtonLink href="/journal" size="lg" variant="ghost">
           Читать журнал

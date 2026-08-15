@@ -1,8 +1,8 @@
-import { EditorialBand } from "@/components/sections/EditorialBand";
 import { FeaturedTrio } from "@/components/sections/FeaturedTrio";
 import { Hero } from "@/components/sections/Hero";
 import { JournalPreview } from "@/components/sections/JournalPreview";
 import { NotesStrip } from "@/components/sections/NotesStrip";
+import { StoreInfo } from "@/components/sections/StoreInfo";
 import { TwoHouses } from "@/components/sections/TwoHouses";
 
 export default function HomePage() {
@@ -12,7 +12,7 @@ export default function HomePage() {
       <FeaturedTrio />
       <NotesStrip />
       <TwoHouses />
-      <EditorialBand />
+      <StoreInfo />
       <JournalPreview />
     </>
   );

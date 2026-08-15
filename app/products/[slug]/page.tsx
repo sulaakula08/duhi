@@ -89,7 +89,7 @@ export default async function ProductPage({
           <ol className="flex flex-wrap items-center gap-2">
             <li>
               <Link href="/collections" className="transition-colors hover:text-accent">
-                Коллекция
+                Каталог
               </Link>
             </li>
             <li aria-hidden="true">/</li>
@@ -136,7 +136,7 @@ export default async function ProductPage({
 
             <section className="mt-16" aria-labelledby="notes-heading">
               <h2 id="notes-heading" className="label-xs text-muted">
-                Пирамида
+                Ноты
               </h2>
               <div className="mt-8">
                 <NotesPyramid product={product} />
@@ -145,7 +145,7 @@ export default async function ProductPage({
 
             <section className="mt-16" aria-labelledby="intensity-heading">
               <h2 id="intensity-heading" className="label-xs text-muted">
-                Как звучит
+                Стойкость и шлейф
               </h2>
               <div className="mt-8">
                 <IntensityMeter intensity={product.intensity} />
@@ -159,7 +159,7 @@ export default async function ProductPage({
               <Accordion
                 items={[
                   {
-                    title: "История",
+                    title: "Как носить",
                     content: <p>{product.story}</p>,
                   },
                   {
@@ -171,8 +171,8 @@ export default async function ProductPage({
                           citral, geraniol, coumarin.
                         </p>
                         <p>
-                          Концентрация: парфюмерная вода, 15%. На животных не
-                          тестируется. Разлито в Португалии.
+                          Парфюмерная вода, концентрация 15%. На животных не
+                          тестируется. Срок годности — 3 года с даты вскрытия.
                         </p>
                       </div>
                     ),
@@ -181,9 +181,9 @@ export default async function ProductPage({
                     title: "Доставка",
                     content: (
                       <p>
-                        От €120 доставка бесплатная, иначе €8. Отправляем в течение двух
-                        рабочих дней, с отслеживанием. К каждому заказу — два пробника
-                        на ваш выбор.
+                        От €120 бесплатно, иначе €8. Отправляем в течение двух рабочих
+                        дней, с трек-номером. К каждому заказу кладём два пробника
+                        на выбор.
                       </p>
                     ),
                   },
@@ -191,9 +191,9 @@ export default async function ProductPage({
                     title: "Возврат",
                     content: (
                       <p>
-                        Невскрытый флакон можно вернуть в течение 30 дней и получить
-                        полную сумму. Если флакон открыт и аромат не подошёл — напишите
-                        нам: мы лучше поможем найти тот, который подойдёт.
+                        Невскрытый флакон принимаем обратно 30 дней, деньги возвращаем
+                        полностью. Если открыли и аромат не подошёл — напишите нам,
+                        поможем подобрать другой.
                       </p>
                     ),
                   },
@@ -206,9 +206,9 @@ export default async function ProductPage({
 
       <section className="container-x py-28" aria-labelledby="related-heading">
         <Reveal>
-          <p className="label-xs text-accent">Рядом</p>
+          <p className="label-xs text-accent">Похожее</p>
           <h2 id="related-heading" className="display-3 mt-4">
-            Возможно, подойдёт
+            Смотрят вместе с этим
           </h2>
         </Reveal>
 

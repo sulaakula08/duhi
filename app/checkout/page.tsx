@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function CheckoutPage() {
   return (
     <>
-      <PageHeader eyebrow="Оформление" lines={["Почти", "ваше"]} />
+      <PageHeader eyebrow="Заказ" lines={["Оформление"]} />
       <CheckoutFlow />
     </>
   );

@@ -12,9 +12,9 @@ export default function ContactPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Контакты"
-        lines={["Напишите", "нам"]}
-        intro="Отвечаем на каждое письмо сами, обычно в течение двух рабочих дней. Если аромат не подошёл — расскажите, что он делает, и мы предложим тот, который подойдёт."
+        eyebrow="Связаться"
+        lines={["Контакты"]}
+        intro="Отвечаем в течение двух рабочих дней. Поможем с заказом, подскажем по составу или подберём аромат, если сомневаетесь."
       />
 
       <div className="container-x grid gap-14 pb-28 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
@@ -22,7 +22,7 @@ export default function ContactPage() {
 
         <aside className="space-y-10">
           <div>
-            <h2 className="label-xs text-muted">Студия</h2>
+            <h2 className="label-xs text-muted">Адрес</h2>
             <p className="mt-4 text-[0.98rem]">
               Rua da Boavista 84
               <br />
@@ -32,10 +32,10 @@ export default function ContactPage() {
             </p>
           </div>
           <div>
-            <h2 className="label-xs text-muted">Часы</h2>
+            <h2 className="label-xs text-muted">Часы работы</h2>
             <p className="mt-4 text-[0.98rem] text-muted">
-              Понедельник — пятница, 09:00–18:00 по Лиссабону. Стол в Грассе для
-              посетителей закрыт.
+              Понедельник — пятница, 09:00–18:00. В выходные почту читаем, но
+              отвечаем медленнее.
             </p>
           </div>
           <div>

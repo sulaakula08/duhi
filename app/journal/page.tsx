@@ -16,9 +16,9 @@ export default function JournalPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Журнал"
-        lines={["Про то,", "как это носят"]}
-        intro="Изредка пишем о том, как аромат ведёт себя на самом деле, — и время от времени о том, как делались наши."
+        eyebrow="Полезное"
+        lines={["Журнал"]}
+        intro="Как выбрать аромат, как продлить стойкость и что означают ноты в составе."
       />
 
       <RevealGroup className="container-x grid gap-x-10 gap-y-16 pb-28 md:grid-cols-2 lg:grid-cols-3">

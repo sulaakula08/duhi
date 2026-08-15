@@ -32,11 +32,11 @@ export function Newsletter() {
         <div>
           <p className="label-xs text-accent">Рассылка</p>
           <h2 id="newsletter-heading" className="display-3 mt-4">
-            Два письма в год. Больше ничего.
+            Новинки и скидки
           </h2>
           <p className="mt-3 max-w-md text-[0.95rem] text-muted">
-            Пишем, когда есть что сказать: вышел новый аромат или хочется
-            рассказать, как собирался старый.
+            Пишем редко — когда появляется новый аромат или идёт распродажа.
+            Отписаться можно в один клик.
           </p>
         </div>
 
@@ -59,7 +59,7 @@ export function Newsletter() {
                   <Check size={16} aria-hidden="true" />
                 </motion.span>
                 <p role="status" className="text-[0.95rem]">
-                  Вы в списке. Ждите нас весной.
+                  Готово, вы подписаны.
                 </p>
               </motion.div>
             ) : (

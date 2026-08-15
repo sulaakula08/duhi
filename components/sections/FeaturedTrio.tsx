@@ -12,11 +12,11 @@ export function FeaturedTrio() {
     <section className="container-x py-24 md:py-32" aria-labelledby="featured-heading">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <p className="label-xs text-accent">Главные</p>
+          <p className="label-xs text-accent">Хиты</p>
           <MaskedLines
             as="h2"
             id="featured-heading"
-            lines={["С чего начать"]}
+            lines={["Берут чаще всего"]}
             className="display-2 mt-4"
           />
         </div>

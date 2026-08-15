@@ -8,16 +8,16 @@ import { getProducts } from "@/lib/data/products";
 export const metadata: Metadata = {
   title: "Все ароматы",
   description:
-    "Полная линия Eldea — четырнадцать ароматов: цветочные, древесные, восточные, свежие и гурманские.",
+    "Каталог Eldea: четырнадцать ароматов для женщин и мужчин — цветочные, древесные, восточные, свежие и гурманские. Объёмы 30, 50 и 100 мл.",
 };
 
 export default function CollectionsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Коллекция"
-        lines={["Четырнадцать", "ароматов"]}
-        intro="Фильтруйте по семейству, по тому, кому аромат сделан, или по цене. Всё — парфюмерная вода, в трёх объёмах."
+        eyebrow="Каталог"
+        lines={["Все ароматы"]}
+        intro="Четырнадцать позиций. Фильтруйте по семейству, полу или цене. Везде парфюмерная вода, объёмы 30, 50 и 100 мл."
       />
       <Suspense fallback={<GridFallback />}>
         <CollectionView products={getProducts()} />
