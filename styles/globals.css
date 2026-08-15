@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/* Theme is resolved to an explicit data-theme attribute by the inline script in
+   app/layout.tsx, so a single variant covers both the toggle and system default. */
+@custom-variant dark ([data-theme="dark"] &);
+
+/* ---------------------------------------------------------------- tokens -- */
+
+:root {
+  --bg: #faf8f5;
+  --surface: #f2ede6;
+  --surface-2: #e9e1d6;
+  --ink: #171310;
+  --muted: #6b615a;
+  --line: #ddd3c6;
+  --accent: #8b6f47;
+  --accent-soft: #c9b896;
+  --accent-contrast: #fdfbf8;
+  --feminine: #c48b8b;
+  --masculine: #4a5c5a;
+
+  --shadow-card: 0 1px 2px rgb(23 19 16 / 0.04), 0 12px 32px -12px rgb(23 19 16 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(23 19 16 / 0.05), 0 28px 56px -20px rgb(23 19 16 / 0.22);
+}
+
+[data-theme="dark"] {
+  --bg: #0e0c0b;
+  --surface: #16130f;
+  --surface-2: #201b16;
+  --ink: #f4efe8;
+  --muted: #a0958a;
+  --line: #2c2620;
+  --accent: #c9a86a;
+  --accent-soft: #6d5a3c;
+  --accent-contrast: #14100c;
+  --feminine: #d5a1a1;
+  --masculine: #7d9591;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -12px rgb(0 0 0 / 0.6);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.5), 0 28px 56px -20px rgb(0 0 0 / 0.75);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-feminine: var(--feminine);
+  --color-masculine: var(--masculine);
+
+  /* `--font-*-family` is injected on <html> by next/font; the theme token wraps
+     it with fallbacks. The two names must differ or the var self-references. */
+  --font-display: var(--font-display-family), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-sans-family), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ------------------------------------------------------------------ base -- */
+
+@layer base {
+  /* Tailwind v4 defaults borders to currentColor; the house hairline is --line. */
+  *,
+  ::before,
+  ::after {
+    border-color: var(--line);
+  }
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+/* Chrome закрашивает автозаполненные поля своим светло-голубым фоном и
+   игнорирует background-color. Перебить это можно только внутренней тенью:
+   она рисуется поверх фона автозаполнения. Длинный transition не даёт
+   браузеру вернуть свой цвет при фокусе. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 1000px var(--bg) inset;
+  box-shadow: 0 0 0 1000px var(--bg) inset;
+  caret-color: var(--ink);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Lenis owns the scroll position; these are its required host styles. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ----------------------------------------------------------- utilities --- */
+
+@utility container-x {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 90rem;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container-x {
+    padding-inline: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-x {
+    padding-inline: 4rem;
+  }
+}
+
+/* Uppercase micro-label used for eyebrows and section markers. */
+@utility label-xs {
+  font-size: 0.72rem;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+@utility display-1 {
+  font-family: var(--font-display-family), Georgia, serif;
+  font-size: clamp(3rem, 9vw, 8.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  font-weight: 300;
+}
+
+@utility display-2 {
+  font-family: var(--font-display-family), Georgia, serif;
+  font-size: clamp(2.25rem, 5.2vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  font-weight: 300;
+}
+
+@utility display-3 {
+  font-family: var(--font-display-family), Georgia, serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 300;
+}
+
+/* Clips a line of text so its child can translate up into view. */
+@utility line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* --------------------------------------------------------- reduced motion -- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
