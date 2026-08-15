@@ -28,6 +28,15 @@ const OUTPUT = process.argv[3] ?? "public/products";
 const TOLERANCE = 34;
 /** Ширина мягкого края в единицах допуска — убирает «ореол» по контуру. */
 const FEATHER = 26;
+/**
+ * Заливка не переходит через пиксели с сильным перепадом яркости.
+ *
+ * Без этого она протекает внутрь прозрачного стекла: оно почти того же цвета,
+ * что и белый фон съёмки, и алгоритм считает его фоном. Флакон получается
+ * пустым и на тёмной теме выглядит чёрным. Контур стекла даёт заметный
+ * градиент — по нему заливка и останавливается.
+ */
+const EDGE_LIMIT = 16;
 /** Отступ вокруг флакона в процентах от большей стороны. */
 const PADDING = 0.06;
 /** Итоговый размер. Пропорции 4:5, как у сетки карточек. */
@@ -73,11 +82,31 @@ function sampleBackground(data, width, height, channels) {
   return { r: r / n, g: g / n, b: b / n };
 }
 
+/** Карта перепадов яркости: по ней заливка понимает, где проходит контур. */
+function buildEdges(data, width, height, channels) {
+  const lum = new Float32Array(width * height);
+  for (let p = 0; p < width * height; p++) {
+    const i = p * channels;
+    lum[p] = 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+  }
+
+  const edge = new Float32Array(width * height);
+  for (let y = 1; y < height - 1; y++) {
+    for (let x = 1; x < width - 1; x++) {
+      const p = y * width + x;
+      const gx = Math.abs(lum[p - 1] - lum[p + 1]);
+      const gy = Math.abs(lum[p - width] - lum[p + width]);
+      edge[p] = Math.max(gx, gy);
+    }
+  }
+  return edge;
+}
+
 /**
  * Заливка от краёв. Возвращает альфа-канал: 0 — фон, 255 — объект,
  * промежуточные значения — мягкая кромка.
  */
-function buildAlpha(data, width, height, channels, bg) {
+function buildAlpha(data, width, height, channels, bg, edge) {
   const alpha = new Uint8Array(width * height).fill(255);
   const visited = new Uint8Array(width * height);
   // Очередь на плоском массиве: у больших снимков рекурсия переполнит стек.
@@ -85,12 +114,15 @@ function buildAlpha(data, width, height, channels, bg) {
   let head = 0;
   let tail = 0;
 
-  const push = (x, y) => {
+  const push = (x, y, fromBorder) => {
     if (x < 0 || y < 0 || x >= width || y >= height) return;
     const p = y * width + x;
     if (visited[p]) return;
     const dist = colorDistance(data, p * channels, bg.r, bg.g, bg.b);
     if (dist > TOLERANCE + FEATHER) return;
+    // Контур не переходим — иначе заливка уходит внутрь стекла.
+    // Стартовые пиксели по рамке кадра пропускаем без проверки.
+    if (!fromBorder && edge[p] > EDGE_LIMIT) return;
 
     visited[p] = 1;
     // Внутри допуска — чистый фон; дальше плавный переход к непрозрачному.
@@ -99,22 +131,64 @@ function buildAlpha(data, width, height, channels, bg) {
   };
 
   for (let x = 0; x < width; x++) {
-    push(x, 0);
-    push(x, height - 1);
+    push(x, 0, true);
+    push(x, height - 1, true);
   }
   for (let y = 0; y < height; y++) {
-    push(0, y);
-    push(width - 1, y);
+    push(0, y, true);
+    push(width - 1, y, true);
   }
 
   while (head < tail) {
     const p = queue[head++];
     const x = p % width;
     const y = (p - x) / width;
-    push(x + 1, y);
-    push(x - 1, y);
-    push(x, y + 1);
-    push(x, y - 1);
+    push(x + 1, y, false);
+    push(x - 1, y, false);
+    push(x, y + 1, false);
+    push(x, y - 1, false);
+  }
+
+  return alpha;
+}
+
+/**
+ * Возвращает внутренность силуэта заливке.
+ *
+ * У прозрачного стекла тот же цвет, что и у фона, и плавные переходы внутри,
+ * поэтому заливка всё равно затекает в бутылку — даже с проверкой контура.
+ * Приём стандартный для предметной съёмки: для каждой строки берём крайние
+ * непрозрачные пиксели, для каждого столбца — тоже, и считаем объектом всё,
+ * что попало и в горизонтальный, и в вертикальный промежуток. Пересечение (а
+ * не объединение) важно: иначе заполнится пустота рядом с кисточкой и ручками.
+ *
+ * Стекло при этом сохраняет исходные светлые пиксели — и на тёмной теме
+ * читается как светлый флакон, а не как чёрное пятно.
+ */
+function fillSilhouette(alpha, width, height) {
+  const OPAQUE = 128;
+  const rowMin = new Int32Array(height).fill(-1);
+  const rowMax = new Int32Array(height).fill(-1);
+  const colMin = new Int32Array(width).fill(-1);
+  const colMax = new Int32Array(width).fill(-1);
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (alpha[y * width + x] <= OPAQUE) continue;
+      if (rowMin[y] < 0) rowMin[y] = x;
+      rowMax[y] = x;
+      if (colMin[x] < 0) colMin[x] = y;
+      colMax[x] = y;
+    }
+  }
+
+  for (let y = 0; y < height; y++) {
+    if (rowMin[y] < 0) continue;
+    for (let x = rowMin[y]; x <= rowMax[y]; x++) {
+      if (colMin[x] < 0 || y < colMin[x] || y > colMax[x]) continue;
+      const p = y * width + x;
+      if (alpha[p] < 255) alpha[p] = 255;
+    }
   }
 
   return alpha;
@@ -151,7 +225,12 @@ async function processFile(file, outDir) {
 
   const { width, height, channels } = info;
   const bg = sampleBackground(data, width, height, channels);
-  const alpha = buildAlpha(data, width, height, channels, bg);
+  const edge = buildEdges(data, width, height, channels);
+  const alpha = fillSilhouette(
+    buildAlpha(data, width, height, channels, bg, edge),
+    width,
+    height,
+  );
 
   // Вписываем новую альфу в исходные пиксели.
   for (let p = 0; p < width * height; p++) {
