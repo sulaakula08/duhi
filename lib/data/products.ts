@@ -522,16 +522,29 @@ const products: Product[] = [
  * raw-photos/. Товары молча вернутся к рисованным флаконам.
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-// Префикс _demo- не случайный: по нему файлы исключены из git (.gitignore),
-// чтобы чужие каталожные снимки не попали в историю репозитория.
+// Снимков всего семь, а товаров четырнадцать, поэтому на вторую половину
+// каталога кадры назначены повторно — по близкому цвету стекла. Для проверки
+// вёрстки этого достаточно; с настоящей съёмкой у каждого будет свой.
+const P = "/products/_demo-";
+
 const DEMO_PHOTOS: Record<string, string> = {
-  "vesper-bloom": "/products/_demo-vesper-bloom-1.png",
-  "noir-vetiver": "/products/_demo-noir-vetiver-1.png",
-  "ile-blanche": "/products/_demo-ile-blanche-1.png",
-  cendre: "/products/_demo-cendre-1.png",
-  "verre-fume": "/products/_demo-verre-fume-1.png",
-  "rose-cendree": "/products/_demo-rose-cendree-1.png",
-  "tabac-or": "/products/_demo-tabac-or-1.png",
+  // Свои кадры.
+  "vesper-bloom": `${P}vesper-bloom-1.png`,
+  "noir-vetiver": `${P}noir-vetiver-1.png`,
+  "ile-blanche": `${P}ile-blanche-1.png`,
+  cendre: `${P}cendre-1.png`,
+  "verre-fume": `${P}verre-fume-1.png`,
+  "rose-cendree": `${P}rose-cendree-1.png`,
+  "tabac-or": `${P}tabac-or-1.png`,
+
+  // Повторы.
+  "miel-noir": `${P}tabac-or-1.png`,
+  "ambre-voile": `${P}vesper-bloom-1.png`,
+  "bois-de-fer": `${P}noir-vetiver-1.png`,
+  "neroli-hour": `${P}ile-blanche-1.png`,
+  "encens-pale": `${P}verre-fume-1.png`,
+  "sel-et-cuir": `${P}cendre-1.png`,
+  "figue-sauvage": `${P}rose-cendree-1.png`,
 };
 
 for (const product of products) {
