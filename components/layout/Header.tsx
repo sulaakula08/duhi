@@ -9,6 +9,7 @@ import { Logo } from "@/components/brand/Logo";
 import { spring, transition } from "@/lib/motion";
 import { cartCount, useCartStore, useHydratedCart } from "@/lib/store/cart";
 import { cn } from "@/lib/utils";
+import { AdminLink } from "./AdminLink";
 import { MobileMenu } from "./MobileMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import { primaryNav } from "./nav";
@@ -71,6 +72,8 @@ export function Header() {
           </nav>
 
           <div className="flex shrink-0 items-center gap-1">
+            {/* На узком экране не помещается — там вход через меню. */}
+            <AdminLink className="hidden sm:inline-flex" />
             <ThemeToggle />
 
             <button

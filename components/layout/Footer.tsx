@@ -38,8 +38,17 @@ export function Footer() {
 
       <div className="container-x flex flex-col gap-3 border-t border-line py-7 text-[0.78rem] text-muted sm:flex-row sm:items-center sm:justify-between">
         <p>© {new Date().getFullYear()} Eldea</p>
-        <p>
-          Демонстрационный магазин: заказы не собираются, оплата не проводится.
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span>
+            Демонстрационный магазин: заказы не собираются, оплата не проводится.
+          </span>
+          {/* Неприметная, но не спрятанная: страница всё равно под паролем. */}
+          <Link
+            href="/admin"
+            className="underline-offset-4 transition-colors hover:text-accent hover:underline"
+          >
+            Админка
+          </Link>
         </p>
       </div>
     </footer>

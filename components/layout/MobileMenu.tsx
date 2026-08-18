@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ShoppingBag, X } from "lucide-react";
+import { ShoppingBag, SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { Logo } from "@/components/brand/Logo";
@@ -122,6 +122,14 @@ export function MobileMenu({
               >
                 <ShoppingBag size={16} aria-hidden="true" />
                 Корзина
+              </Link>
+              <Link
+                href="/admin"
+                onClick={onClose}
+                className="inline-flex min-h-11 items-center gap-2 text-[0.9rem] text-muted transition-colors hover:text-accent"
+              >
+                <SlidersHorizontal size={16} aria-hidden="true" />
+                Админка
               </Link>
               <ThemeToggle />
             </div>
