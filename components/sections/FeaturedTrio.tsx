@@ -3,10 +3,10 @@ import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/product/ProductCard";
 import { MaskedLines } from "@/components/ui/MaskedLines";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
-import { getFeatured } from "@/lib/data/products";
+import { getFeaturedProducts } from "@/lib/data/store";
 
-export function FeaturedTrio() {
-  const featured = getFeatured(3);
+export async function FeaturedTrio() {
+  const featured = await getFeaturedProducts(3);
 
   return (
     <section className="container-x py-24 md:py-32" aria-labelledby="featured-heading">

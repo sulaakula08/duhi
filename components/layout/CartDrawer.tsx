@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { ProductImage } from "@/components/product/ProductImage";
 import { ButtonLink } from "@/components/ui/Button";
-import { getProductBySlug } from "@/lib/data/products";
 import { springSoft, transition } from "@/lib/motion";
 import {
   SHIPPING_THRESHOLD,
@@ -130,8 +129,7 @@ export function CartDrawer() {
                 <ul className="flex-1 overflow-y-auto px-6">
                   <AnimatePresence initial={false}>
                     {lines.map((line) => {
-                      const product = getProductBySlug(line.slug);
-                      return (
+                                return (
                         <motion.li
                           key={line.key}
                           layout={!reduced}
@@ -147,10 +145,11 @@ export function CartDrawer() {
                               onClick={close}
                               className="block w-20 shrink-0 rounded-sm bg-surface"
                             >
-                              {product && (
+                              {line.art && (
                                 <ProductImage
-                                  art={product.art}
-                                  alt={product.images[0].alt}
+                                  art={line.art}
+                                  alt=""
+                                  photo={line.photo}
                                   showGround={false}
                                 />
                               )}

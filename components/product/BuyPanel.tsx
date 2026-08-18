@@ -34,6 +34,8 @@ export function BuyPanel({ product }: { product: Product }) {
       ml: size.ml,
       sku: size.sku,
       price: size.price,
+      art: product.art,
+      photo: product.photos?.[0],
     });
     setAdded(true);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);

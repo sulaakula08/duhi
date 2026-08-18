@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { HideOnAdmin } from "@/components/layout/HideOnAdmin";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { themeInitScript } from "@/components/layout/ThemeToggle";
 import "@/styles/globals.css";
@@ -56,12 +57,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
 
         <SmoothScroll />
-        <Header />
+        <HideOnAdmin>
+          <Header />
+        </HideOnAdmin>
 
         <main id="main">{children}</main>
 
-        <Footer />
-        <CartDrawer />
+        <HideOnAdmin>
+          <Footer />
+          <CartDrawer />
+        </HideOnAdmin>
       </body>
     </html>
   );

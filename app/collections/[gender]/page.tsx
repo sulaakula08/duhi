@@ -8,8 +8,8 @@ import {
   GENDERS,
   GENDER_LABEL,
   type Gender,
-  getProductsByGender,
 } from "@/lib/data/products";
+import { getProductsFor } from "@/lib/data/store";
 
 const COPY: Record<Gender, { eyebrow: string; lines: string[]; intro: string }> = {
   women: {
@@ -68,7 +68,7 @@ export default async function GenderCollectionPage({
     <>
       <PageHeader eyebrow={copy.eyebrow} lines={copy.lines} intro={copy.intro} />
       <Suspense fallback={<GridFallback />}>
-        <CollectionView products={getProductsByGender(gender)} lockedGender={gender} />
+        <CollectionView products={await getProductsFor(gender)} lockedGender={gender} />
       </Suspense>
     </>
   );

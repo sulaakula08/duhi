@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Field";
+import { PromoField, type AppliedPromo } from "./PromoField";
 import { ease, transition } from "@/lib/motion";
 import { cartSubtotal, shippingFor, useCartStore, useHydratedCart } from "@/lib/store/cart";
 import { cn, formatPrice } from "@/lib/utils";
@@ -54,9 +55,13 @@ export function CheckoutFlow() {
   const { lines, hydrated } = useHydratedCart();
   const reduced = useReducedMotion();
 
+  const [promo, setPromo] = useState<AppliedPromo>();
+
   const subtotal = cartSubtotal(lines);
   const shipping = shippingFor(subtotal);
-  const total = subtotal + shipping;
+  // Скидка считается от суммы товаров, доставку не трогаем.
+  const discount = promo ? Math.round((subtotal * promo.percent) / 100) : 0;
+  const total = Math.max(0, subtotal - discount) + shipping;
 
   function go(next: number) {
     setDirection(next > step ? 1 : -1);
@@ -128,7 +133,20 @@ export function CheckoutFlow() {
             </li>
           ))}
         </ul>
+        <PromoField
+          subtotal={subtotal}
+          applied={promo}
+          onApply={setPromo}
+          onClear={() => setPromo(undefined)}
+        />
+
         <dl className="mt-6 space-y-3 border-t border-line pt-6 text-[0.95rem]">
+          {promo && (
+            <div className="flex justify-between text-accent">
+              <dt>Скидка {promo.code}</dt>
+              <dd className="tabular-nums">−{formatPrice(discount)}</dd>
+            </div>
+          )}
           <div className="flex justify-between">
             <dt className="text-muted">Доставка</dt>
             <dd className="tabular-nums">

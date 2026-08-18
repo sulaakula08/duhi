@@ -5,7 +5,6 @@ import { Minus, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { ProductImage } from "@/components/product/ProductImage";
 import { ButtonLink } from "@/components/ui/Button";
-import { getProductBySlug } from "@/lib/data/products";
 import { transition } from "@/lib/motion";
 import {
   SHIPPING_THRESHOLD,
@@ -43,7 +42,6 @@ export function CartView() {
       <ul className="border-t border-line">
         <AnimatePresence initial={false}>
           {lines.map((line) => {
-            const product = getProductBySlug(line.slug);
             return (
               <motion.li
                 key={line.key}
@@ -59,8 +57,13 @@ export function CartView() {
                     href={`/products/${line.slug}`}
                     className="block w-24 shrink-0 rounded-sm bg-surface sm:w-32"
                   >
-                    {product && (
-                      <ProductImage art={product.art} alt="" showGround={false} />
+                    {line.art && (
+                      <ProductImage
+                        art={line.art}
+                        alt=""
+                        photo={line.photo}
+                        showGround={false}
+                      />
                     )}
                   </Link>
 

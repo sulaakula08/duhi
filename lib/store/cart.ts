@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import type { BottleArt } from "@/lib/data/products";
 import { persist } from "zustand/middleware";
 import { useEffect, useState } from "react";
 
@@ -15,6 +16,14 @@ export type CartLine = {
   sku: string;
   price: number;
   quantity: number;
+  /**
+   * Картинка едет вместе со строкой корзины.
+   *
+   * Иначе корзине пришлось бы искать товар в каталоге, а каталог живёт на
+   * сервере: товары из админки клиенту недоступны, и у них пропала бы картинка.
+   */
+  art?: BottleArt;
+  photo?: string;
 };
 
 type CartState = {

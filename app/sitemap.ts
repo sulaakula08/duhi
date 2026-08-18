@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 import { getArticles } from "@/lib/data/journal";
-import { GENDERS, getProducts } from "@/lib/data/products";
+import { GENDERS } from "@/lib/data/products";
+import { getAllProducts } from "@/lib/data/store";
 
 const BASE = "https://eldea.example";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticRoutes = ["", "/collections", "/journal", "/contact"].map(
@@ -23,7 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const productRoutes = getProducts().map((product) => ({
+  const productRoutes = (await getAllProducts()).map((product) => ({
     url: `${BASE}/products/${product.slug}`,
     lastModified: now,
     changeFrequency: "monthly" as const,

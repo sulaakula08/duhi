@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { CollectionView } from "@/components/collections/CollectionView";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ProductCardSkeleton } from "@/components/ui/Skeleton";
-import { getProducts } from "@/lib/data/products";
+import { getAllProducts } from "@/lib/data/store";
 
 export const metadata: Metadata = {
   title: "Все ароматы",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Каталог Eldea: четырнадцать ароматов для женщин и мужчин — цветочные, древесные, восточные, свежие и гурманские. Объёмы 30, 50 и 100 мл.",
 };
 
-export default function CollectionsPage() {
+export default async function CollectionsPage() {
   return (
     <>
       <PageHeader
@@ -20,7 +20,7 @@ export default function CollectionsPage() {
         intro="Четырнадцать позиций. Фильтруйте по семейству, полу или цене. Везде парфюмерная вода, объёмы 30, 50 и 100 мл."
       />
       <Suspense fallback={<GridFallback />}>
-        <CollectionView products={getProducts()} />
+        <CollectionView products={await getAllProducts()} />
       </Suspense>
     </>
   );

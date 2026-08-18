@@ -13,15 +13,20 @@ import { StarRating } from "@/components/ui/StarRating";
 import {
   FAMILY_LABEL,
   GENDER_LABEL,
-  getProductBySlug,
   getProducts,
-  getRelated,
   priceRange,
 } from "@/lib/data/products";
+import { findProduct, getRelatedProducts } from "@/lib/data/store";
 
+/**
+ * Пререндерим только то, что зашито в код. Товары из админки появляются на
+ * диске уже после сборки, поэтому их страницы отрисуются по первому запросу.
+ */
 export function generateStaticParams() {
   return getProducts().map((product) => ({ slug: product.slug }));
 }
+
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -29,7 +34,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await findProduct(slug);
   if (!product) return {};
 
   return {
@@ -48,10 +53,10 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await findProduct(slug);
   if (!product) notFound();
 
-  const related = getRelated(product);
+  const related = await getRelatedProducts(product);
   const { min, max } = priceRange(product);
 
   const jsonLd = {
