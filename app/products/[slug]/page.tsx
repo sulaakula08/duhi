@@ -57,6 +57,9 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const related = await getRelatedProducts(product);
+  // У товаров из админки нот может не быть — тогда схему не показываем.
+  const hasNotes =
+    product.notes.top.length + product.notes.heart.length + product.notes.base.length > 0;
   const { min, max } = priceRange(product);
 
   const jsonLd = {
@@ -139,14 +142,16 @@ export default async function ProductPage({
               <BuyPanel product={product} />
             </div>
 
-            <section className="mt-16" aria-labelledby="notes-heading">
-              <h2 id="notes-heading" className="label-xs text-muted">
-                Ноты
-              </h2>
-              <div className="mt-8">
-                <NotesPyramid product={product} />
-              </div>
-            </section>
+            {hasNotes && (
+              <section className="mt-16" aria-labelledby="notes-heading">
+                <h2 id="notes-heading" className="label-xs text-muted">
+                  Ноты
+                </h2>
+                <div className="mt-8">
+                  <NotesPyramid product={product} />
+                </div>
+              </section>
+            )}
 
             <section className="mt-16" aria-labelledby="intensity-heading">
               <h2 id="intensity-heading" className="label-xs text-muted">

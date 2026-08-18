@@ -5,8 +5,13 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
-import { FAMILY_LABEL, GENDER_LABEL, type Family, type Gender } from "@/lib/data/products";
+import { GENDER_LABEL, type Gender } from "@/lib/data/products";
 import { cn } from "@/lib/utils";
+
+/** Те же коэффициенты, что и на сервере, — только чтобы показать подсказку. */
+const FACTOR = { 30: 0.65, 100: 1.45 } as const;
+const priceFor = (base: number, ml: 30 | 100) =>
+  Number.isFinite(base) ? Math.round(base * FACTOR[ml]) : 0;
 import { PublishOverlay } from "./PublishOverlay";
 
 const EMPTY = {
@@ -14,13 +19,7 @@ const EMPTY = {
   subtitle: "",
   description: "",
   gender: "women" as Gender,
-  family: "floral" as Family,
-  price30: "",
-  price50: "",
-  price100: "",
-  notesTop: "",
-  notesHeart: "",
-  notesBase: "",
+  price: "",
   story: "",
   inStock: true,
   featured: false,
@@ -151,46 +150,23 @@ export function ProductForm({
           options={Object.entries(GENDER_LABEL)}
           onChange={(v) => set("gender", v as Gender)}
         />
-        <Choice
-          label="Семейство"
-          value={form.family}
-          options={Object.entries(FAMILY_LABEL)}
-          onChange={(v) => set("family", v as Family)}
-        />
-      </div>
-
-      <fieldset>
-        <legend className="label-xs text-muted">Цены, €</legend>
-        <div className="mt-3 grid grid-cols-3 gap-4">
-          {(["price30", "price50", "price100"] as const).map((key, i) => (
-            <label key={key} className="block">
-              <span className="text-[0.78rem] text-muted">{[30, 50, 100][i]} мл</span>
-              <Input
-                required
-                type="number"
-                inputMode="numeric"
-                min={1}
-                placeholder="0"
-                value={form[key]}
-                onChange={(e) => set(key, e.target.value)}
-              />
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <div className="grid gap-7 sm:grid-cols-3">
-        <Field label="Верхние ноты" hint="Через запятую">
-          <Input value={form.notesTop} onChange={(e) => set("notesTop", e.target.value)} />
-        </Field>
-        <Field label="Сердце">
+        <Field
+          label="Цена за 50 мл, €"
+          hint={
+            form.price
+              ? `30 мл — €${priceFor(Number(form.price), 30)}, 100 мл — €${priceFor(Number(form.price), 100)}`
+              : "Цены за 30 и 100 мл посчитаем сами"
+          }
+        >
           <Input
-            value={form.notesHeart}
-            onChange={(e) => set("notesHeart", e.target.value)}
+            required
+            type="number"
+            inputMode="numeric"
+            min={1}
+            placeholder="0"
+            value={form.price}
+            onChange={(e) => set("price", e.target.value)}
           />
-        </Field>
-        <Field label="База">
-          <Input value={form.notesBase} onChange={(e) => set("notesBase", e.target.value)} />
         </Field>
       </div>
 

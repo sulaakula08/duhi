@@ -82,17 +82,16 @@ function applyDraft(product: Product, draft: ProductDraft): Product {
     description: draft.description,
     story: draft.story,
     gender: draft.gender,
-    family: draft.family,
-    notes: {
-      top: splitNotes(draft.notesTop),
-      heart: splitNotes(draft.notesHeart),
-      base: splitNotes(draft.notesBase),
-    },
-    sizes: product.sizes.map((size) => ({
-      ...size,
-      price:
-        size.ml === 30 ? draft.price30 : size.ml === 50 ? draft.price50 : draft.price100,
-    })),
+    family: draft.family ?? product.family,
+    notes:
+      draft.notesTop === undefined
+        ? product.notes
+        : {
+            top: splitNotes(draft.notesTop),
+            heart: splitNotes(draft.notesHeart ?? ""),
+            base: splitNotes(draft.notesBase ?? ""),
+          },
+    sizes: product.sizes.map((size) => ({ ...size, price: priceFor(draft.price, size.ml) })),
     photos: draft.photo ? [draft.photo, draft.photo, draft.photo, draft.photo] : product.photos,
     inStock: draft.inStock,
     featured: draft.featured,
@@ -109,13 +108,7 @@ export function toDraft(product: Product): ProductDraft {
     description: product.description,
     story: product.story,
     gender: product.gender,
-    family: product.family,
-    price30: price(30),
-    price50: price(50),
-    price100: price(100),
-    notesTop: product.notes.top.join(", "),
-    notesHeart: product.notes.heart.join(", "),
-    notesBase: product.notes.base.join(", "),
+    price: price(50),
     photo: product.photos?.[0],
     inStock: product.inStock,
     featured: product.featured,
@@ -175,19 +168,33 @@ export type ProductDraft = {
   subtitle: string;
   description: string;
   gender: Gender;
-  family: Family;
-  price30: number;
-  price50: number;
-  price100: number;
-  notesTop: string;
-  notesHeart: string;
-  notesBase: string;
+  /** Базовая цена — за 50 мл. Остальные объёмы считаются от неё. */
+  price: number;
   story: string;
   photo?: string;
   inStock: boolean;
   featured: boolean;
   isNew: boolean;
+  /**
+   * Необязательные поля: форма админки их не показывает. Если поле не пришло,
+   * при правке существующего товара прежнее значение сохраняется — иначе
+   * редактирование названия стирало бы ноты и семейство.
+   */
+  family?: Family;
+  notesTop?: string;
+  notesHeart?: string;
+  notesBase?: string;
 };
+
+/**
+ * Соотношения взяты из каталога: 96 / 148 / 212 у Vesper Bloom и так далее.
+ * Админ вводит одну цену, три объёма считаются по ним.
+ */
+export const SIZE_FACTOR = { 30: 0.65, 50: 1, 100: 1.45 } as const;
+
+export function priceFor(base: number, ml: 30 | 50 | 100): number {
+  return Math.round(base * SIZE_FACTOR[ml]);
+}
 
 /** Кириллицу транслитерируем, иначе slug получится пустым. */
 const TRANSLIT: Record<string, string> = {
@@ -234,19 +241,19 @@ export async function createProduct(draft: ProductDraft): Promise<Product> {
     name: draft.name,
     subtitle: draft.subtitle,
     gender: draft.gender,
-    family: draft.family,
+    family: draft.family ?? "fresh",
     description: draft.description,
     story: draft.story,
     notes: {
-      top: splitNotes(draft.notesTop),
-      heart: splitNotes(draft.notesHeart),
-      base: splitNotes(draft.notesBase),
+      top: splitNotes(draft.notesTop ?? ""),
+      heart: splitNotes(draft.notesHeart ?? ""),
+      base: splitNotes(draft.notesBase ?? ""),
     },
     intensity: { longevity: 75, sillage: 60, warmth: 55 },
     sizes: [
-      { ml: 30, price: draft.price30, sku: `${slug}-30`.toUpperCase() },
-      { ml: 50, price: draft.price50, sku: `${slug}-50`.toUpperCase() },
-      { ml: 100, price: draft.price100, sku: `${slug}-100`.toUpperCase() },
+      { ml: 30, price: priceFor(draft.price, 30), sku: `${slug}-30`.toUpperCase() },
+      { ml: 50, price: priceFor(draft.price, 50), sku: `${slug}-50`.toUpperCase() },
+      { ml: 100, price: priceFor(draft.price, 100), sku: `${slug}-100`.toUpperCase() },
     ],
     art: { shape: "tall", from: "#DDD8CE", to: "#9C978B", cap: "#5B564C" },
     photos: draft.photo ? [draft.photo, draft.photo, draft.photo, draft.photo] : undefined,

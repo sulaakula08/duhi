@@ -13,23 +13,19 @@ import { ProductForm, type FormValues } from "./ProductForm";
 import { ProductRow, type AdminRow } from "./ProductRow";
 import { PromoPanel } from "./PromoPanel";
 
-/** Товар -> значения формы. Цены в форме строковые: это поля input. */
+/**
+ * Товар -> значения формы. Цена строковая, потому что это значение input.
+ * Семейство и ноты форма не показывает, поэтому и не передаёт: сервер оставит
+ * прежние значения, а не затрёт их пустыми.
+ */
 function toFormValues(product: AdminRow): FormValues {
-  const price = (ml: number) =>
-    String(product.sizes.find((s) => s.ml === ml)?.price ?? "");
   return {
     name: product.name,
     subtitle: product.subtitle,
     description: product.description,
     story: product.story,
     gender: product.gender,
-    family: product.family,
-    price30: price(30),
-    price50: price(50),
-    price100: price(100),
-    notesTop: product.notes.top.join(", "),
-    notesHeart: product.notes.heart.join(", "),
-    notesBase: product.notes.base.join(", "),
+    price: String(product.sizes.find((s) => s.ml === 50)?.price ?? ""),
     photo: product.photos?.[0],
     inStock: product.inStock,
     featured: product.featured,
