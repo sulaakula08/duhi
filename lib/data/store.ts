@@ -12,6 +12,7 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { DEFAULT_CURRENCY, isCurrency, type CurrencyCode } from "./currency";
 import {
   type Family,
   type Gender,
@@ -23,6 +24,7 @@ const DATA_DIR = path.join(process.cwd(), "data");
 const PRODUCTS_FILE = path.join(DATA_DIR, "products.json");
 const PROMOS_FILE = path.join(DATA_DIR, "promos.json");
 const OVERRIDES_FILE = path.join(DATA_DIR, "overrides.json");
+const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 
 /**
  * Правки поверх каталога.
@@ -60,6 +62,22 @@ async function readJson<T>(file: string, fallback: T): Promise<T> {
 async function writeJson(file: string, value: unknown): Promise<void> {
   await mkdir(DATA_DIR, { recursive: true });
   await writeFile(file, JSON.stringify(value, null, 2), "utf8");
+}
+
+/* --------------------------------------------------------------- настройки -- */
+
+export type Settings = { currency: CurrencyCode };
+
+export async function getSettings(): Promise<Settings> {
+  const raw = await readJson<Partial<Settings>>(SETTINGS_FILE, {});
+  const currency = raw.currency;
+  return { currency: currency && isCurrency(currency) ? currency : DEFAULT_CURRENCY };
+}
+
+export async function setCurrency(code: CurrencyCode): Promise<Settings> {
+  const settings: Settings = { currency: code };
+  await writeJson(SETTINGS_FILE, settings);
+  return settings;
 }
 
 /* ------------------------------------------------------------------ товары -- */
@@ -371,7 +389,7 @@ export async function deletePromo(code: string): Promise<boolean> {
 
 export type PromoCheck =
   | { ok: true; code: string; percent: number; discount: number }
-  | { ok: false; error: string };
+  | { ok: false; error: string; minTotal?: number };
 
 /** Проверяем на сервере: список промокодов клиенту не отдаём. */
 export async function checkPromo(code: string, subtotal: number): Promise<PromoCheck> {
@@ -379,7 +397,8 @@ export async function checkPromo(code: string, subtotal: number): Promise<PromoC
 
   if (!promo || !promo.active) return { ok: false, error: "Такого промокода нет." };
   if (subtotal < promo.minTotal) {
-    return { ok: false, error: `Промокод работает от €${promo.minTotal}.` };
+    // Сумма приходит в базовой единице; в валюту её переведёт клиент.
+    return { ok: false, error: "Сумма заказа слишком мала для этого кода.", minTotal: promo.minTotal };
   }
 
   return {

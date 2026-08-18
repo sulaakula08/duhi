@@ -16,7 +16,9 @@ import {
   getProducts,
   priceRange,
 } from "@/lib/data/products";
-import { findProduct, getRelatedProducts } from "@/lib/data/store";
+import { formatMoney } from "@/lib/data/currency";
+import { findProduct, getRelatedProducts, getSettings } from "@/lib/data/store";
+import { SHIPPING_FEE, SHIPPING_THRESHOLD } from "@/lib/data/shipping";
 
 /**
  * Пререндерим только то, что зашито в код. Товары из админки появляются на
@@ -57,6 +59,8 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const related = await getRelatedProducts(product);
+  const { currency } = await getSettings();
+  const money = (n: number) => formatMoney(n, currency);
   // У товаров из админки нот может не быть — тогда схему не показываем.
   const hasNotes =
     product.notes.top.length + product.notes.heart.length + product.notes.base.length > 0;
@@ -191,9 +195,9 @@ export default async function ProductPage({
                     title: "Доставка",
                     content: (
                       <p>
-                        От €120 бесплатно, иначе €8. Отправляем в течение двух рабочих
-                        дней, с трек-номером. К каждому заказу кладём два пробника
-                        на выбор.
+                        От {money(SHIPPING_THRESHOLD)} бесплатно, иначе{" "}
+                        {money(SHIPPING_FEE)}. Отправляем в течение двух рабочих дней,
+                        с трек-номером. К каждому заказу кладём два пробника на выбор.
                       </p>
                     ),
                   },

@@ -5,7 +5,8 @@ import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { FAMILY_LABEL, GENDER_LABEL, type Product } from "@/lib/data/products";
 import { transition } from "@/lib/motion";
-import { cn, formatPrice } from "@/lib/utils";
+import { useMoney } from "@/components/CurrencyProvider";
+import { cn } from "@/lib/utils";
 
 export type AdminRow = Product & { source: "custom" | "seed"; hidden: boolean };
 
@@ -23,6 +24,7 @@ export function ProductRow({
   onRestore: () => void;
 }) {
   const price = Math.min(...product.sizes.map((s) => s.price));
+  const money = useMoney();
 
   return (
     <motion.li
@@ -64,7 +66,7 @@ export function ProductRow({
           </div>
           <p className="mt-1 text-[0.82rem] text-muted">
             {GENDER_LABEL[product.gender]} · {FAMILY_LABEL[product.family]} · от{" "}
-            {formatPrice(price)}
+            {money(price)}
           </p>
         </div>
 

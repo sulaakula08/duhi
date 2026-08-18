@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Check, X } from "lucide-react";
 import { useState } from "react";
+import { useMoney } from "@/components/CurrencyProvider";
 import { Field, Input } from "@/components/ui/Field";
 import { transition } from "@/lib/motion";
 
@@ -22,6 +23,7 @@ export function PromoField({
   const [code, setCode] = useState("");
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
+  const money = useMoney();
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -42,7 +44,11 @@ export function PromoField({
       onApply({ code: data.code, percent: data.percent, discount: data.discount });
       setCode("");
     } else {
-      setError(data.error ?? "Код не подошёл.");
+      setError(
+        data.minTotal
+          ? `Промокод работает от ${money(data.minTotal)}.`
+          : (data.error ?? "Код не подошёл."),
+      );
     }
     setBusy(false);
   }

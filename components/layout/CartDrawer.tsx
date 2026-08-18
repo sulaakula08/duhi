@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Minus, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { useMoney } from "@/components/CurrencyProvider";
 import { ProductImage } from "@/components/product/ProductImage";
 import { ButtonLink } from "@/components/ui/Button";
 import { springSoft, transition } from "@/lib/motion";
@@ -14,7 +15,6 @@ import {
   useCartStore,
   useHydratedCart,
 } from "@/lib/store/cart";
-import { formatPrice } from "@/lib/utils";
 
 export function CartDrawer() {
   const isOpen = useCartStore((s) => s.isOpen);
@@ -25,6 +25,7 @@ export function CartDrawer() {
   const reduced = useReducedMotion();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const money = useMoney();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -205,7 +206,7 @@ export function CartDrawer() {
                                   </button>
                                 </div>
                                 <span className="text-[0.9rem] tabular-nums">
-                                  {formatPrice(line.price * line.quantity)}
+                                  {money(line.price * line.quantity)}
                                 </span>
                               </div>
                             </div>
@@ -219,7 +220,7 @@ export function CartDrawer() {
                 <footer className="border-t border-line px-6 py-5">
                   {remaining > 0 && (
                     <p className="mb-4 text-[0.8rem] text-muted">
-                      До бесплатной доставки — {formatPrice(remaining)}.
+                      До бесплатной доставки — {money(remaining)}.
                     </p>
                   )}
                   <div className="flex items-baseline justify-between">
@@ -231,13 +232,13 @@ export function CartDrawer() {
                       transition={transition.micro}
                       className="font-display text-2xl tabular-nums"
                     >
-                      {formatPrice(subtotal)}
+                      {money(subtotal)}
                     </motion.span>
                   </div>
                   <p className="mt-1 text-[0.78rem] text-muted">
                     {shipping === 0
                       ? "Доставка включена"
-                      : `Доставка ${formatPrice(shipping)}`}{" "}
+                      : `Доставка ${money(shipping)}`}{" "}
                     · Налоги считаются при оформлении
                   </p>
                   <ButtonLink href="/checkout" onClick={close} className="mt-5 w-full" size="lg">

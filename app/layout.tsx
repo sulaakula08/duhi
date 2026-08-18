@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { CurrencyProvider } from "@/components/CurrencyProvider";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { HideOnAdmin } from "@/components/layout/HideOnAdmin";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { themeInitScript } from "@/components/layout/ThemeToggle";
+import { getSettings } from "@/lib/data/store";
 import "@/styles/globals.css";
 
 // Кириллица подключается явно — иначе заголовки уедут в системный шрифт.
@@ -29,19 +31,21 @@ export const metadata: Metadata = {
     template: "%s — Eldea",
   },
   description:
-    "Парфюмерия для женщин и мужчин: четырнадцать ароматов в объёмах 30, 50 и 100 мл. Доставка от €120 бесплатно, два пробника к каждому заказу.",
+    "Парфюмерия для женщин и мужчин: четырнадцать ароматов в объёмах 30, 50 и 100 мл. Бесплатная доставка от порога заказа, два пробника к каждому заказу.",
   openGraph: {
     type: "website",
     siteName: "Eldea",
     locale: "ru_RU",
     title: "Eldea — магазин парфюмерии",
     description:
-      "Четырнадцать ароматов для женщин и мужчин. Объёмы 30, 50 и 100 мл, доставка от €120 бесплатно.",
+      "Четырнадцать ароматов для женщин и мужчин. Объёмы 30, 50 и 100 мл.",
   },
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { currency } = await getSettings();
+
   return (
     <html lang="ru" suppressHydrationWarning className={`${display.variable} ${sans.variable}`}>
       <head>
@@ -56,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           К основному содержанию
         </a>
 
+        <CurrencyProvider currency={currency}>
         <SmoothScroll />
         <HideOnAdmin>
           <Header />
@@ -67,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <CartDrawer />
         </HideOnAdmin>
+        </CurrencyProvider>
       </body>
     </html>
   );

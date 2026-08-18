@@ -5,6 +5,7 @@ import { Minus, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { ProductImage } from "@/components/product/ProductImage";
 import { ButtonLink } from "@/components/ui/Button";
+import { useMoney } from "@/components/CurrencyProvider";
 import { transition } from "@/lib/motion";
 import {
   SHIPPING_THRESHOLD,
@@ -13,13 +14,13 @@ import {
   useCartStore,
   useHydratedCart,
 } from "@/lib/store/cart";
-import { formatPrice } from "@/lib/utils";
 
 export function CartView() {
   const remove = useCartStore((s) => s.remove);
   const setQuantity = useCartStore((s) => s.setQuantity);
   const { lines, hydrated } = useHydratedCart();
   const reduced = useReducedMotion();
+  const money = useMoney();
 
   const subtotal = cartSubtotal(lines);
   const shipping = shippingFor(subtotal);
@@ -114,7 +115,7 @@ export function CartView() {
                         </button>
                       </div>
                       <span className="font-display text-2xl tabular-nums">
-                        {formatPrice(line.price * line.quantity)}
+                        {money(line.price * line.quantity)}
                       </span>
                     </div>
                   </div>
@@ -131,23 +132,23 @@ export function CartView() {
         <dl className="mt-6 space-y-3 border-t border-line pt-6 text-[0.95rem]">
           <div className="flex justify-between">
             <dt className="text-muted">Товары</dt>
-            <dd className="tabular-nums">{formatPrice(subtotal)}</dd>
+            <dd className="tabular-nums">{money(subtotal)}</dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted">Доставка</dt>
             <dd className="tabular-nums">
-              {shipping === 0 ? "Включена" : formatPrice(shipping)}
+              {shipping === 0 ? "Включена" : money(shipping)}
             </dd>
           </div>
           <div className="flex justify-between border-t border-line pt-4 text-lg">
             <dt>К оплате</dt>
-            <dd className="font-display text-3xl tabular-nums">{formatPrice(total)}</dd>
+            <dd className="font-display text-3xl tabular-nums">{money(total)}</dd>
           </div>
         </dl>
 
         {subtotal < SHIPPING_THRESHOLD && subtotal > 0 && (
           <p className="mt-4 text-[0.82rem] text-muted">
-            До бесплатной доставки — {formatPrice(SHIPPING_THRESHOLD - subtotal)}.
+            До бесплатной доставки — {money(SHIPPING_THRESHOLD - subtotal)}.
           </p>
         )}
 

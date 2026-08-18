@@ -5,6 +5,8 @@ import { Tag, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Field";
+import { useCurrency, useMoney } from "@/components/CurrencyProvider";
+import { toBase } from "@/lib/data/currency";
 import type { Promo } from "@/lib/data/store";
 import { transition } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -16,6 +18,8 @@ export function PromoPanel({ initial }: { initial: Promo[] }) {
   const [minTotal, setMinTotal] = useState("0");
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
+  const currency = useCurrency();
+  const money = useMoney();
 
   async function refresh() {
     const response = await fetch("/api/admin/promos");
@@ -30,7 +34,8 @@ export function PromoPanel({ initial }: { initial: Promo[] }) {
     const response = await fetch("/api/admin/promos", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ code, percent, minTotal }),
+      // Минимальная сумма хранится в базовой единице, как и цены.
+      body: JSON.stringify({ code, percent, minTotal: toBase(Number(minTotal), currency) }),
     });
     const data = await response.json().catch(() => ({}));
 
@@ -81,7 +86,7 @@ export function PromoPanel({ initial }: { initial: Promo[] }) {
               onChange={(e) => setPercent(e.target.value)}
             />
           </Field>
-          <Field label="От суммы, €" hint="0 — без условия">
+          <Field label="От суммы" hint="0 — без условия">
             <Input
               type="number"
               inputMode="numeric"
@@ -128,7 +133,7 @@ export function PromoPanel({ initial }: { initial: Promo[] }) {
 
                   <span className="text-[0.85rem] text-muted">
                     −{promo.percent}%
-                    {promo.minTotal > 0 && <> · от €{promo.minTotal}</>}
+                    {promo.minTotal > 0 && <> · от {money(promo.minTotal)}</>}
                   </span>
 
                   <div className="ml-auto flex items-center gap-2">

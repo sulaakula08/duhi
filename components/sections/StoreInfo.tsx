@@ -1,11 +1,14 @@
 import { Package, RotateCcw, Truck } from "lucide-react";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { formatMoney } from "@/lib/data/currency";
+import { getSettings } from "@/lib/data/store";
+import { SHIPPING_FEE, SHIPPING_THRESHOLD } from "@/lib/data/shipping";
 
-const ITEMS = [
+const items = (money: (n: number) => string) => [
   {
     icon: Truck,
     title: "Доставка",
-    body: "От €120 бесплатно, иначе €8. Отправляем в течение двух рабочих дней, с трек-номером.",
+    body: `От ${money(SHIPPING_THRESHOLD)} бесплатно, иначе ${money(SHIPPING_FEE)}. Отправляем в течение двух рабочих дней, с трек-номером.`,
   },
   {
     icon: Package,
@@ -19,7 +22,11 @@ const ITEMS = [
   },
 ];
 
-export function StoreInfo() {
+export async function StoreInfo() {
+  const { currency } = await getSettings();
+  const money = (n: number) => formatMoney(n, currency);
+  const ITEMS = items(money);
+
   return (
     <section
       className="border-y border-line bg-surface py-20 md:py-24"

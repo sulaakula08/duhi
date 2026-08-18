@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import type { BottleArt } from "@/lib/data/products";
+import { SHIPPING_FEE, SHIPPING_THRESHOLD } from "@/lib/data/shipping";
 import { persist } from "zustand/middleware";
 import { useEffect, useState } from "react";
 
@@ -79,8 +80,7 @@ export const useCartStore = create<CartState>()(
   ),
 );
 
-export const SHIPPING_THRESHOLD = 120;
-export const SHIPPING_FEE = 8;
+export { SHIPPING_FEE, SHIPPING_THRESHOLD } from "@/lib/data/shipping";
 
 export function cartSubtotal(lines: CartLine[]): number {
   return lines.reduce((sum, l) => sum + l.price * l.quantity, 0);

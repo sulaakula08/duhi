@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/Button";
 import type { Product } from "@/lib/data/products";
 import { findSize } from "@/lib/data/products";
 import { spring, transition } from "@/lib/motion";
+import { SHIPPING_THRESHOLD } from "@/lib/data/shipping";
 import { useCartStore } from "@/lib/store/cart";
-import { cn, formatPrice } from "@/lib/utils";
+import { useMoney } from "@/components/CurrencyProvider";
+import { cn } from "@/lib/utils";
 
 export function BuyPanel({ product }: { product: Product }) {
   const [ml, setMl] = useState<number>(product.sizes[1]?.ml ?? product.sizes[0].ml);
@@ -16,6 +18,7 @@ export function BuyPanel({ product }: { product: Product }) {
   const add = useCartStore((s) => s.add);
   const reduced = useReducedMotion();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const money = useMoney();
 
   const size = findSize(product, ml);
 
@@ -79,7 +82,7 @@ export function BuyPanel({ product }: { product: Product }) {
                 transition={transition.standard}
                 className="font-display text-3xl tabular-nums"
               >
-                {formatPrice(size.price)}
+                {money(size.price)}
               </motion.p>
             </AnimatePresence>
           </div>
@@ -125,7 +128,7 @@ export function BuyPanel({ product }: { product: Product }) {
       </p>
 
       <p className="mt-4 text-center text-[0.78rem] text-muted">
-        Бесплатная доставка от €120 · Два пробника к каждому заказу
+        Бесплатная доставка от {money(SHIPPING_THRESHOLD)} · Два пробника к заказу
       </p>
     </div>
   );

@@ -5,14 +5,15 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
+import { useCurrency, useMoney } from "@/components/CurrencyProvider";
 import { GENDER_LABEL, type Gender } from "@/lib/data/products";
+import { CURRENCIES, CURRENCY_CODES, toBase, type CurrencyCode } from "@/lib/data/currency";
 import { cn } from "@/lib/utils";
-
-/** Те же коэффициенты, что и на сервере, — только чтобы показать подсказку. */
-const FACTOR = { 30: 0.65, 100: 1.45 } as const;
-const priceFor = (base: number, ml: 30 | 100) =>
-  Number.isFinite(base) ? Math.round(base * FACTOR[ml]) : 0;
+import { CurrencySwitch } from "./CurrencySwitch";
 import { PublishOverlay } from "./PublishOverlay";
+
+/** Те же коэффициенты, что и на сервере, — чтобы показать расчётные цены. */
+const FACTOR = { 30: 0.65, 100: 1.45 } as const;
 
 const EMPTY = {
   name: "",
@@ -45,6 +46,8 @@ export function ProductForm({
   const [error, setError] = useState<string>();
   const [publishing, setPublishing] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const currency = useCurrency();
+  const money = useMoney();
 
   // Подставляем значения, когда нажали «Изменить» у товара в списке.
   useEffect(() => {
@@ -90,7 +93,12 @@ export function ProductForm({
       {
         method: editing ? "PATCH" : "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...form, photo }),
+        // Админ вводит цену в валюте магазина, хранится она в базовой единице.
+        body: JSON.stringify({
+          ...form,
+          price: toBase(Number(form.price), currency),
+          photo,
+        }),
       },
     );
     const data = await response.json().catch(() => ({}));
@@ -151,22 +159,26 @@ export function ProductForm({
           onChange={(v) => set("gender", v as Gender)}
         />
         <Field
-          label="Цена за 50 мл, €"
+          label="Цена"
           hint={
             form.price
-              ? `30 мл — €${priceFor(Number(form.price), 30)}, 100 мл — €${priceFor(Number(form.price), 100)}`
-              : "Цены за 30 и 100 мл посчитаем сами"
+              ? `За 50 мл. 30 мл — ${money(toBase(Number(form.price) * FACTOR[30], currency))}, 100 мл — ${money(toBase(Number(form.price) * FACTOR[100], currency))}`
+              : "За 50 мл. Цены за 30 и 100 мл посчитаем сами"
           }
         >
-          <Input
-            required
-            type="number"
-            inputMode="numeric"
-            min={1}
-            placeholder="0"
-            value={form.price}
-            onChange={(e) => set("price", e.target.value)}
-          />
+          <span className="flex items-center gap-3">
+            <Input
+              required
+              type="number"
+              inputMode="numeric"
+              min={1}
+              step={CURRENCIES[currency].step}
+              placeholder="0"
+              value={form.price}
+              onChange={(e) => set("price", e.target.value)}
+            />
+            <CurrencySwitch />
+          </span>
         </Field>
       </div>
 

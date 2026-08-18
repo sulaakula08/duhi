@@ -5,7 +5,8 @@ import Link from "next/link";
 import type { Product } from "@/lib/data/products";
 import { FAMILY_LABEL, priceRange } from "@/lib/data/products";
 import { transition } from "@/lib/motion";
-import { cn, formatPrice } from "@/lib/utils";
+import { useMoney } from "@/components/CurrencyProvider";
+import { cn } from "@/lib/utils";
 import { ProductImage } from "./ProductImage";
 
 const GENDER_ACCENT: Record<Product["gender"], string> = {
@@ -23,6 +24,7 @@ export function ProductCard({
 }) {
   const reduced = useReducedMotion();
   const { min } = priceRange(product);
+  const money = useMoney();
 
   return (
     <motion.article
@@ -62,7 +64,7 @@ export function ProductCard({
             <p className="mt-1 truncate text-[0.85rem] text-muted">{product.subtitle}</p>
           </div>
           <p className="shrink-0 text-[0.9rem] tabular-nums text-muted">
-            от {formatPrice(min)}
+            от {money(min)}
           </p>
         </div>
       </Link>

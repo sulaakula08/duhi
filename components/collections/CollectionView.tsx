@@ -16,6 +16,7 @@ import {
   type Product,
   priceRange,
 } from "@/lib/data/products";
+import { useMoney } from "@/components/CurrencyProvider";
 import { transition } from "@/lib/motion";
 import { cn, plural } from "@/lib/utils";
 
@@ -28,11 +29,15 @@ const SORTS: { value: Sort; label: string }[] = [
   { value: "newest", label: "Новинки" },
 ];
 
-const PRICE_BANDS: { value: string; label: string; test: (min: number) => boolean }[] = [
-  { value: "under-100", label: "До €100", test: (min) => min < 100 },
-  { value: "100-200", label: "€100 – €200", test: (min) => min >= 100 && min <= 200 },
-  { value: "over-200", label: "Больше €200", test: (min) => min > 200 },
-];
+/**
+ * Границы заданы в базовой единице; подпись собирается в валюте магазина,
+ * поэтому фильтр не расходится с ценами на карточках.
+ */
+const PRICE_BANDS = [
+  { value: "under-100", max: 100, test: (min: number) => min < 100 },
+  { value: "100-200", min: 100, max: 200, test: (min: number) => min >= 100 && min <= 200 },
+  { value: "over-200", min: 200, test: (min: number) => min > 200 },
+] as const;
 
 /**
  * Filters live in the URL so the state is shareable and the back button
@@ -50,6 +55,13 @@ export function CollectionView({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const money = useMoney();
+
+  const bandLabel = (band: (typeof PRICE_BANDS)[number]) => {
+    if (!("min" in band)) return `До ${money(band.max)}`;
+    if (!("max" in band)) return `Больше ${money(band.min)}`;
+    return `${money(band.min)} – ${money(band.max)}`;
+  };
 
   const activeFamilies = searchParams.getAll("family") as Family[];
   const activeGenders = searchParams.getAll("gender") as Gender[];
@@ -149,7 +161,7 @@ export function CollectionView({
                 })
               }
             >
-              {band.label}
+              {bandLabel(band)}
             </FilterChip>
           ))}
         </FilterGroup>

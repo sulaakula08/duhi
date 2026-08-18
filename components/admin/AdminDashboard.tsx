@@ -9,6 +9,8 @@ import { Logo } from "@/components/brand/Logo";
 import type { Promo } from "@/lib/data/store";
 import { transition } from "@/lib/motion";
 import { cn, plural } from "@/lib/utils";
+import { useCurrency } from "@/components/CurrencyProvider";
+import { fromBase, type CurrencyCode } from "@/lib/data/currency";
 import { ProductForm, type FormValues } from "./ProductForm";
 import { ProductRow, type AdminRow } from "./ProductRow";
 import { PromoPanel } from "./PromoPanel";
@@ -18,14 +20,14 @@ import { PromoPanel } from "./PromoPanel";
  * Семейство и ноты форма не показывает, поэтому и не передаёт: сервер оставит
  * прежние значения, а не затрёт их пустыми.
  */
-function toFormValues(product: AdminRow): FormValues {
+function toFormValues(product: AdminRow, currency: CurrencyCode): FormValues {
   return {
     name: product.name,
     subtitle: product.subtitle,
     description: product.description,
     story: product.story,
     gender: product.gender,
-    price: String(product.sizes.find((s) => s.ml === 50)?.price ?? ""),
+    price: String(fromBase(product.sizes.find((s) => s.ml === 50)?.price ?? 0, currency)),
     photo: product.photos?.[0],
     inStock: product.inStock,
     featured: product.featured,
@@ -45,6 +47,7 @@ export function AdminDashboard({
   const [tab, setTab] = useState<Tab>("catalogue");
   const [all, setAll] = useState(products);
   const [editing, setEditing] = useState<{ id: string; values: FormValues }>();
+  const currency = useCurrency();
   const router = useRouter();
 
   async function refreshProducts() {
@@ -67,7 +70,7 @@ export function AdminDashboard({
   }
 
   function startEdit(product: AdminRow) {
-    setEditing({ id: product.id, values: toFormValues(product) });
+    setEditing({ id: product.id, values: toFormValues(product, currency) });
     // На телефоне форма выше списка — иначе непонятно, что произошло.
     window.scrollTo({ top: 0, behavior: "smooth" });
   }

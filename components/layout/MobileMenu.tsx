@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { ease, transition } from "@/lib/motion";
+import { useMoney } from "@/components/CurrencyProvider";
+import { SHIPPING_THRESHOLD } from "@/lib/data/shipping";
 import { ThemeToggle } from "./ThemeToggle";
 import { primaryNav } from "./nav";
 
@@ -19,6 +21,7 @@ export function MobileMenu({
   const reduced = useReducedMotion();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const money = useMoney();
 
   // Блокируем страницу, переводим фокус внутрь и держим его там, пока меню открыто.
   useEffect(() => {
@@ -136,7 +139,7 @@ export function MobileMenu({
           </nav>
 
           <p className="container-x absolute inset-x-0 bottom-10 text-[0.8rem] text-muted">
-            Доставка от €120 бесплатно.
+            Доставка от {money(SHIPPING_THRESHOLD)} бесплатно.
             <br />
             Два пробника к каждому заказу.
           </p>

@@ -12,7 +12,8 @@ import { Field, Input } from "@/components/ui/Field";
 import { PromoField, type AppliedPromo } from "./PromoField";
 import { ease, transition } from "@/lib/motion";
 import { cartSubtotal, shippingFor, useCartStore, useHydratedCart } from "@/lib/store/cart";
-import { cn, formatPrice } from "@/lib/utils";
+import { useMoney } from "@/components/CurrencyProvider";
+import { cn } from "@/lib/utils";
 
 /** Единственный номер карты, который принимает демо. Никуда не отправляется. */
 const DEMO_CARD = "4242424242424242";
@@ -56,6 +57,7 @@ export function CheckoutFlow() {
   const reduced = useReducedMotion();
 
   const [promo, setPromo] = useState<AppliedPromo>();
+  const money = useMoney();
 
   const subtotal = cartSubtotal(lines);
   const shipping = shippingFor(subtotal);
@@ -128,7 +130,7 @@ export function CheckoutFlow() {
                 </span>
               </span>
               <span className="shrink-0 tabular-nums">
-                {formatPrice(line.price * line.quantity)}
+                {money(line.price * line.quantity)}
               </span>
             </li>
           ))}
@@ -144,18 +146,18 @@ export function CheckoutFlow() {
           {promo && (
             <div className="flex justify-between text-accent">
               <dt>Скидка {promo.code}</dt>
-              <dd className="tabular-nums">−{formatPrice(discount)}</dd>
+              <dd className="tabular-nums">−{money(discount)}</dd>
             </div>
           )}
           <div className="flex justify-between">
             <dt className="text-muted">Доставка</dt>
             <dd className="tabular-nums">
-              {shipping === 0 ? "Включена" : formatPrice(shipping)}
+              {shipping === 0 ? "Включена" : money(shipping)}
             </dd>
           </div>
           <div className="flex justify-between border-t border-line pt-4">
             <dt>К оплате</dt>
-            <dd className="font-display text-3xl tabular-nums">{formatPrice(total)}</dd>
+            <dd className="font-display text-3xl tabular-nums">{money(total)}</dd>
           </div>
         </dl>
       </aside>
@@ -311,6 +313,7 @@ function PaymentStep({
   onComplete: () => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
+  const money = useMoney();
   const {
     register,
     handleSubmit,
@@ -389,7 +392,7 @@ function PaymentStep({
               exit={{ opacity: 0 }}
               transition={transition.micro}
             >
-              {submitting ? "Оформляем…" : `Оформить · ${formatPrice(total)}`}
+              {submitting ? "Оформляем…" : `Оформить · ${money(total)}`}
             </motion.span>
           </AnimatePresence>
         </Button>
